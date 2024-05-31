@@ -4,6 +4,10 @@ inputs:
   project-path:
     description: 'Path to the Xcode project file'
     required: true
+  report-warnings-as-error:
+    description: 'Report warnings as errors'
+    required: false
+    default: false
 runs:
   using: 'composite'
   steps:
@@ -18,6 +22,10 @@ runs:
         perl ./scripts/sort-xcode-project-file.pl "${{ inputs['project-path'] }}"
 
         if ! [ -z "$(git status --porcelain | grep -e pbxproj$)" ]; then 
-          echo "Project file is not sorted, this may make it harder to merge"
-          exit 1   
+          if [ "${{ inputs['report-warnings-as-error'] }}" = "true" ]; then
+            echo "Project file is not sorted, this may make it harder to merge"
+            exit 1
+          else
+            echo "::warning::Project file is not sorted, this may make it harder to merge"
+          fi
         fi
