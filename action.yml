@@ -1,0 +1,23 @@
+name: 'Validate Xcode Project Sorted'
+description: 'A GitHub Action to validate if an Xcode project file is sorted.'
+inputs:
+  project-path:
+    description: 'Path to the Xcode project file'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Perl
+      run: sudo apt-get install -y perl
+
+    - name: Validate Project is Sorted
+      run: |
+        perl ./scripts/sort-xcode-project-file.pl "${{ inputs['project-path'] }}"
+
+        if ! [ -z "$(git status --porcelain | grep -e pbxproj$)" ]; then 
+          echo "Project file is not sorted, this may make it harder to merge"
+          exit 1   
+        fi
