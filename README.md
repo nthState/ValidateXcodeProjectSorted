@@ -2,6 +2,9 @@
 
 This GitHub Action validates if an Xcode project file is sorted.
 
+When working with other developers, you may find it easier to merge project files
+that are sorted alphabetically.
+
 ## Inputs
 
 ### `project-path`
